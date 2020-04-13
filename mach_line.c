@@ -3,14 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-
-
-
 #include <stdio.h>
-
-
-
-
 
 bool is_match_simple_expression(char *line, basic_expression *expression){
     bool is_match;
