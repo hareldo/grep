@@ -7,8 +7,6 @@ typedef enum regex_type {OR, RANGE} regex_type;
 typedef struct basic_expression {
     char* string1;
     char* string2;
-    int length1;
-    int length2;
     char first_char;
     char last_char;
     regex_type type;
