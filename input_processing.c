@@ -40,12 +40,14 @@ FILE *set_search_parameters(FILE *file_pointer, Flags *input_flags, char *search
 
 
 int search_lines(FILE *file_pointer, char *search_fraze, Flags *input_flags){
-    int line_read, line_size = 0;
+    int line_read, line_size = 0, line_counter=0, bit_counter=0;
     char *line = NULL;
     line_read = getline(&line, line_size, file_pointer);
     while(line_read != -1){
         /// call the search and print functions
         line_read = getline(&line, line_size, file_pointer);
+        line_counter++;
+        bit_counter = bit_counter + line_read;
     }
     return 0;
 }
