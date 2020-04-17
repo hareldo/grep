@@ -1,4 +1,3 @@
-#include "flags_collection.h"
 #include <stdio.h>
 #include <stdlib.h>
 
