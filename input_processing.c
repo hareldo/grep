@@ -15,7 +15,7 @@ FILE *set_search_parameters(FILE *file_pointer, Flags *input_flags, char *search
         file_pointer = stdin;
     for (int i = 1; i < number_of_args; i++) {
         if(strcmp(input_args[i],"-A")==0){
-            input_flags->a_flag_num = input_args[i+1];
+            input_flags->a_flag_num = atoi(input_args[i+1]);
             i++;
         }
         else if (strcmp(input_args[i],"-b")==0)
@@ -38,16 +38,17 @@ FILE *set_search_parameters(FILE *file_pointer, Flags *input_flags, char *search
         }
 
     }
-    return file_pointer
+    return file_pointer;
 }
 
 
 int search_lines(FILE *file_pointer, char *search_fraze, Flags *input_flags){
-    int line_read, line_size = 0, line_counter = 0, bit_counter = 0, match_counter = 0;
+    int line_read, line_counter = 0, bit_counter = 0, match_counter = 0;
+    size_t line_size = 0;
     char *line = NULL;
     ExpressionsArray *expressions = (ExpressionsArray *)malloc(sizeof(ExpressionsArray));
     expressions->length = 0;
-    line_read = getline(&line, line_size, file_pointer);
+    line_read = getline(&line, &line_size, file_pointer);
     while(line_read != -1){
         parse_regex(search_fraze, expressions,input_flags);
         int is_match = is_match_in_line(line, expressions, input_flags);
@@ -56,9 +57,9 @@ int search_lines(FILE *file_pointer, char *search_fraze, Flags *input_flags){
                 match_counter++;
         }
         else if (is_match || (!is_match && input_flags->v_flag)){
-            print_line(file_pointer, input_flags, line, line_counter, bit_counter)
+            print_line(file_pointer, input_flags, line, line_counter, bit_counter);
         }
-        line_read = getline(&line, line_size, file_pointer);
+        line_read = getline(&line, &line_size, file_pointer);
         line_counter++;
         bit_counter = bit_counter + line_read;
     }

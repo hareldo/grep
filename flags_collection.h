@@ -11,5 +11,5 @@ typedef struct Flags{
     int e_flag;
 } Flags;
 
-void set_flags_to_defulat(Flags *flags);
+void set_flags_to_default(Flags *flags);
 #endif

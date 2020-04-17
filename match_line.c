@@ -49,7 +49,6 @@ match_type is_exact_match_in_line(char *line_p, ExpressionsArray *expressions){
 
 int move_to_first_match_in_line(char **line_p, ExpressionsArray *expressions){
     int expression_index = 0;
-    int is_find_match = FALSE;
     int num_of_matching_chars;
 
     while ('\0' != **line_p){
