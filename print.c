@@ -6,7 +6,8 @@ int print_with_a_flag(FILE *file_pointer, Flags *flags, int line_counter, int bi
     int line_read;
     size_t line_size = 0;
     char *line_for_a = NULL;
-    for (int i = 0; i < flags->a_flag_num; i++) {
+    int i;
+    for (i = 0; i < flags->a_flag_num; i++) {
         line_read = getline(&line_for_a, &line_size, file_pointer);
         if(line_read == -1)
             return line_counter;
