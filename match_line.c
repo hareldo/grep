@@ -1,4 +1,4 @@
-#include "mach_line.h"
+#include "match_line.h"
 #include "common_defines.h"
 #include <stdlib.h>
 #include <string.h>
@@ -9,7 +9,7 @@
 
 typedef enum match_type {NOT_MATCH, MATCH, EXACT_MATCH} match_type;
 
-int count_matching_chars(char *line, basic_expression *expression){
+int count_matching_chars(char *line, BasicExpression *expression){
     int first_match, second_match;
     if(expression->type == OR) {
         if(strncmp(line, expression->string1, strlen(expression->string1)) == 0)
@@ -26,7 +26,7 @@ int count_matching_chars(char *line, basic_expression *expression){
     }
 }
 
-match_type is_exact_match_in_line(char *line_p, expressions_array *expressions){
+match_type is_exact_match_in_line(char *line_p, ExpressionsArray *expressions){
     int expression_index = 0;
     int num_of_matching_chars;
     while (('\0' != *line_p) && (expression_index < expressions->length)){
@@ -47,7 +47,7 @@ match_type is_exact_match_in_line(char *line_p, expressions_array *expressions){
 }
 
 
-int move_to_first_match_in_line(char **line_p, expressions_array *expressions){
+int move_to_first_match_in_line(char **line_p, ExpressionsArray *expressions){
     int expression_index = 0;
     int is_find_match = FALSE;
     int num_of_matching_chars;
@@ -63,14 +63,14 @@ int move_to_first_match_in_line(char **line_p, expressions_array *expressions){
 }
 
 
-int add_chars_range(char *first_char, char *last_char, basic_expression *expression){
+int add_chars_range(char *first_char, char *last_char, BasicExpression *expression){
     expression->string1 = strndup(first_char, 1);
     expression->string2 = strndup(last_char, 1);
     expression->type = RANGE;
     return 1;
 }
 
-int parse_round_bracket(char *string, basic_expression *expression){
+int parse_round_bracket(char *string, BasicExpression *expression){
     char *string_copy;
     string_copy = strdup(string + 1);
     char *first_string = strtok(string_copy, "|");
@@ -84,7 +84,7 @@ int parse_round_bracket(char *string, basic_expression *expression){
         return add_chars_range(string, string, expression);
 }
 
-int parse_square_bracket(char *string, basic_expression *expression){
+int parse_square_bracket(char *string, BasicExpression *expression){
     char *string_copy;
     string_copy = strdup(string + 1);
     char *first_char = strtok(string_copy, "-");
@@ -97,10 +97,10 @@ int parse_square_bracket(char *string, basic_expression *expression){
 }
 
 
-void parse_regex(char *regex_p, expressions_array *expressions, Flags *flags){
+void parse_regex(char *regex_p, ExpressionsArray *expressions, Flags *flags){
     int num_of_expressions = 0;
-    basic_expression *new_array;
-    new_array = (basic_expression *)malloc(sizeof(basic_expression));
+    BasicExpression *new_array;
+    new_array = (BasicExpression *)malloc(sizeof(BasicExpression));
 
     if (!flags->e_flag) {
         new_array[0].string1 = strdup(regex_p);
@@ -108,12 +108,12 @@ void parse_regex(char *regex_p, expressions_array *expressions, Flags *flags){
         new_array[0].type = OR;
         num_of_expressions = 1;
     } else {
-        basic_expression *new_expression;
+        BasicExpression *new_expression;
         int expression_len;
         char first_ascii_char_p = FIRST_ASCII_CHAR;
         char last_ascii_char_p = LAST_ASCII_CHAR;
         while ('\0' != *regex_p) {
-            new_array = (basic_expression *) realloc(new_array, sizeof(basic_expression) * (num_of_expressions + 1));
+            new_array = (BasicExpression *) realloc(new_array, sizeof(BasicExpression) * (num_of_expressions + 1));
             new_expression = &new_array[num_of_expressions];
             switch (*regex_p) {
                 case '(':
@@ -140,7 +140,7 @@ void parse_regex(char *regex_p, expressions_array *expressions, Flags *flags){
 }
 
 
-int is_match_in_line(char *line_p, expressions_array *expressions, Flags *flags){
+int is_match_in_line(char *line_p, ExpressionsArray *expressions, Flags *flags){
     if (flags->x_flag) {
         if(count_matching_chars(line_p, &expressions->array[0]) == 0)
             return FALSE;
@@ -162,4 +162,10 @@ int is_match_in_line(char *line_p, expressions_array *expressions, Flags *flags)
         else
             return FALSE;
     }
+}
+
+
+void free_expression(ExpressionsArray *expressions) {
+    free(expressions->array);
+    free(expressions);
 }

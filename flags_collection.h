@@ -1,7 +1,7 @@
 #ifndef FLAGS_COLLECTION_H
 #define FLAGS_COLLECTION_H
 typedef struct Flags{
-    int a_flag;
+    int a_flag_num;
     int b_flag;
     int c_flag;
     int i_flag;
@@ -9,7 +9,6 @@ typedef struct Flags{
     int v_flag;
     int x_flag;
     int e_flag;
-    int file_input_flag;
 } Flags;
 
 void set_flags_to_defulat(Flags *flags);

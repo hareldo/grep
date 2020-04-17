@@ -5,19 +5,19 @@
 
 typedef enum regex_type {OR, RANGE} regex_type;
 
-typedef struct basic_expression {
+typedef struct BasicExpression {
     char* string1;
     char* string2;
     regex_type type;
-} basic_expression;
+} BasicExpression;
 
-typedef struct expressions_array {
-    basic_expression *array;
+typedef struct ExpressionsArray {
+    BasicExpression *array;
     int length;
-} expressions_array;
+} ExpressionsArray;
 
 
-void parse_regex(char *regex_p, expressions_array *expressions, Flags *flags);
-int is_match_in_line(char *line_p, expressions_array *expressions, Flags *flags);
-
-#endif //GREP_MACH_LINE_H
+void parse_regex(char *regex_p, ExpressionsArray *expressions, Flags *flags);
+int is_match_in_line(char *line_p, ExpressionsArray *expressions, Flags *flags);
+void free_expression(ExpressionsArray *expressions);
+#endif
