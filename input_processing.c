@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <string.h>
 
-FILE *set_search_parameters(FILE *file_pointer, Flags *input_flags, char *search_fraze,
+FILE *set_search_parameters(FILE *file_pointer, Flags *input_flags, char **search_fraze,
                     char *input_args[], int number_of_args){
     if(file_pointer!=NULL){
         number_of_args--;
@@ -33,8 +33,8 @@ FILE *set_search_parameters(FILE *file_pointer, Flags *input_flags, char *search
         else if (strcmp(input_args[i],"-E")==0)
             input_flags->e_flag = TRUE;
         else{
-            search_fraze = malloc(strlen(input_args[i]));
-            strcpy(search_fraze,input_args[i]);
+            *search_fraze = malloc(strlen(input_args[i]));
+            strcpy(*search_fraze,input_args[i]);
         }
 
     }

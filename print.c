@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "print.h"
 
 int print_with_a_flag(FILE *file_pointer, Flags *flags, int line_counter, int bit_counter){
     int line_read;

@@ -9,7 +9,7 @@ int main(int argc, char *argv[]) {
     Flags *input_flags = (Flags *)malloc(sizeof(Flags));
     set_flags_to_default(input_flags);
     char *search_fraze = NULL;
-    file_pointer = set_search_parameters(file_pointer, input_flags, search_fraze, argv, argc);
+    file_pointer = set_search_parameters(file_pointer, input_flags, &search_fraze, argv, argc);
     search_lines(file_pointer, search_fraze, input_flags);
     fclose(file_pointer);
     free(input_flags);
