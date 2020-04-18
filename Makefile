@@ -4,7 +4,7 @@ my_grep: main.o flags_collection.o input_processing.o match_line.o print.o
 main.o: main.c input_processing.h flags_collection.h
 	gcc -Wall -Wextra -c main.c 
 
-input_processing.o: input_processing.c flags_collection.h common_defines.h print.h match_line.h
+input_processing.o: input_processing.c input_processing.h flags_collection.h common_defines.h print.h match_line.h
 	gcc -Wall -Wextra -c input_processing.c
 
 match_line.o: match_line.c match_line.h common_defines.h flags_collection.h
