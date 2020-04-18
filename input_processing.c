@@ -8,15 +8,13 @@
 
 FILE *set_search_parameters(FILE *file_pointer, Flags *input_flags, char **search_fraze,
                     char *input_args[], int number_of_args){
-    int is_file = 1;
     if(file_pointer!=NULL){
         number_of_args--;
     }
     else {
         file_pointer = stdin;
-        is_file = 0;
     }
-    for (int i = 1; i < number_of_args-is_file; i++) {
+    for (int i = 1; i < number_of_args; i++) {
         if(strcmp(input_args[i],"-A")==0){
             input_flags->a_flag_num = atoi(input_args[i+1]);
             i++;
@@ -51,9 +49,9 @@ int search_lines(FILE *file_pointer, char *search_fraze, Flags *input_flags){
     char *line = NULL;
     ExpressionsArray *expressions = (ExpressionsArray *)malloc(sizeof(ExpressionsArray));
     expressions->length = 0;
+    parse_regex(search_fraze, expressions,input_flags);
     line_read = getline(&line, &line_size, file_pointer);
     while(line_read != -1){
-        parse_regex(search_fraze, expressions,input_flags);
         int is_match = is_match_in_line(line, expressions, input_flags);
         if ((is_match && !input_flags->v_flag) || (!is_match && input_flags->v_flag)){
             if(input_flags->c_flag)
