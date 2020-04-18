@@ -46,7 +46,7 @@ FILE *set_search_parameters(FILE *file_pointer, Flags *input_flags, char **searc
 
 
 int search_lines(FILE *file_pointer, char *search_fraze, Flags *input_flags){
-    int line_read, line_counter = 0, bit_counter = 0, match_counter = 0;
+    int line_read, line_counter = 1, bit_counter = 0, match_counter = 0;
     size_t line_size = 0;
     char *line = NULL;
     ExpressionsArray *expressions = (ExpressionsArray *)malloc(sizeof(ExpressionsArray));

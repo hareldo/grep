@@ -27,7 +27,7 @@ int print_line(FILE *file_pointer, Flags *flags, char *line, int line_counter, i
             printf("%d:", line_counter);
         if (flags->b_flag)
             printf("%d:", bit_counter);
-        printf("%s\n", line);
+        printf("%s", line);
     if(flags->a_flag_num)
         line_counter = print_with_a_flag(file_pointer, flags, line_counter, bit_counter);
     return line_counter;
