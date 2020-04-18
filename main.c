@@ -4,8 +4,7 @@
 #include <stdlib.h>
 
 int main(int argc, char *argv[]) {
-    FILE *file_pointer;
-    file_pointer = fopen(argv[argc],"r");
+    FILE *file_pointer = fopen(argv[argc-1],"r");
     Flags *input_flags = (Flags *)malloc(sizeof(Flags));
     set_flags_to_default(input_flags);
     char *search_fraze = NULL;

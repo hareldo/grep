@@ -1,20 +1,22 @@
 #include "flags_collection.h"
+#include "input_processing.h"
 #include "common_defines.h"
 #include "print.h"
 #include "match_line.h"
 #include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
 
 FILE *set_search_parameters(FILE *file_pointer, Flags *input_flags, char **search_fraze,
                     char *input_args[], int number_of_args){
-    int i;
+    int is_file = 1;
     if(file_pointer!=NULL){
         number_of_args--;
     }
-    else
+    else {
         file_pointer = stdin;
-    for (i = 1; i < number_of_args; i++) {
+        is_file = 0;
+    }
+    for (int i = 1; i < number_of_args-is_file; i++) {
         if(strcmp(input_args[i],"-A")==0){
             input_flags->a_flag_num = atoi(input_args[i+1]);
             i++;
@@ -53,12 +55,11 @@ int search_lines(FILE *file_pointer, char *search_fraze, Flags *input_flags){
     while(line_read != -1){
         parse_regex(search_fraze, expressions,input_flags);
         int is_match = is_match_in_line(line, expressions, input_flags);
-        if(input_flags->c_flag) {
-            if (is_match || (!is_match && input_flags->v_flag))
+        if ((is_match && !input_flags->v_flag) || (!is_match && input_flags->v_flag)){
+            if(input_flags->c_flag)
                 match_counter++;
-        }
-        else if (is_match || (!is_match && input_flags->v_flag)){
-            print_line(file_pointer, input_flags, line, line_counter, bit_counter);
+            else
+                print_line(file_pointer, input_flags, line, line_counter, bit_counter);
         }
         line_read = getline(&line, &line_size, file_pointer);
         line_counter++;
