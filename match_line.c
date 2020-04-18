@@ -178,6 +178,11 @@ int is_match_in_line(char *line_p, ExpressionsArray *expressions, Flags *flags){
 
 
 void free_expression(ExpressionsArray *expressions) {
+    int i = 0;
+    for(i =0; i < expressions->length; i++){
+        free(expressions->array[i].string1);
+        free(expressions->array[i].string2);
+    }
     free(expressions->array);
     free(expressions);
 }
