@@ -67,6 +67,7 @@ int search_lines(FILE *file_pointer, char *search_fraze, Flags *input_flags){
     if(input_flags->c_flag)
         print_c_flag(match_counter);
     free_expression(expressions);
+    free(line);
     return 0;
 }
 
