@@ -14,7 +14,8 @@ FILE *set_search_parameters(FILE *file_pointer, Flags *input_flags, char **searc
     else {
         file_pointer = stdin;
     }
-    for (int i = 1; i < number_of_args; i++) {
+    int i;
+    for (i = 1; i < number_of_args; i++) {
         if(strcmp(input_args[i],"-A")==0){
             input_flags->a_flag_num = atoi(input_args[i+1]);
             i++;
