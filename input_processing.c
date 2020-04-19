@@ -35,7 +35,7 @@ FILE *set_search_parameters(FILE *file_pointer, Flags *input_flags, char **searc
         else if (strcmp(input_args[i],"-E")==0)
             input_flags->e_flag = TRUE;
         else{
-            *search_fraze = malloc(strlen(input_args[i]));
+            *search_fraze = malloc(strlen(input_args[i])+1);
             strcpy(*search_fraze,input_args[i]);
         }
 
