@@ -87,25 +87,31 @@ int parse_round_bracket(char *string, BasicExpression *expression){
     string_copy = strdup(string + 1);
     char *first_string = strtok(string_copy, "|");
     char *second_string = strtok(NULL, ")");
+    int expression_len;
     if((NULL != first_string) || (NULL != second_string)) {
         expression->string1 = strdup(first_string);
         expression->string2 = strdup(second_string);
         expression->type = OR;
-        return strlen(first_string) + strlen(second_string) + 3;
+        expression_len = strlen(first_string) + strlen(second_string) + 3;
     } else
-        return add_chars_range(string, string, expression);
+        expression_len = add_chars_range(string, string, expression);
+    free(string_copy);
+    return expression_len;
 }
 
 int parse_square_bracket(char *string, BasicExpression *expression){
     char *string_copy;
     string_copy = strdup(string + 1);
+    int expression_len;
     char *first_char = strtok(string_copy, "-");
     char *last_char = strtok(NULL, "]");
     if((NULL != first_char) || (NULL != last_char)) {
         add_chars_range(first_char, last_char, expression);
-        return strlen(first_char) + strlen(last_char) + 3;
+        expression_len = strlen(first_char) + strlen(last_char) + 3;
     } else
-        return add_chars_range(string, string, expression);
+        expression_len = add_chars_range(string, string, expression);
+    free(string_copy);
+    return expression_len;
 }
 
 
