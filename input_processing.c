@@ -79,6 +79,7 @@ int search_lines(FILE *file_pointer, char *search_fraze, Flags *input_flags, Cou
     parse_regex(search_fraze, expressions,input_flags);
     line_read = getline(&line, &line_size, file_pointer);
     while(line_read != -1){
+        int bit_offset = line_read;
         int is_match = is_match_in_line(line, expressions, input_flags);
         if ((is_match && !input_flags->v_flag) || (!is_match && input_flags->v_flag)){
             if(input_flags->c_flag)
@@ -90,8 +91,8 @@ int search_lines(FILE *file_pointer, char *search_fraze, Flags *input_flags, Cou
             }
         }
         line_read = getline(&line, &line_size, file_pointer);
+        counters->bit_counter =counters->bit_counter + bit_offset;
         counters->line_counter++;
-        counters->bit_counter = counters->bit_counter + line_read;
     }
     if(input_flags->c_flag)
         print_c_flag(counters->match_counter);
