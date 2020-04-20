@@ -160,26 +160,19 @@ void parse_regex(char *regex_p, ExpressionsArray *expressions, Flags *flags){
 
 int is_match_in_line(char *line_p, ExpressionsArray *expressions, Flags *flags){
     if (flags->x_flag) {
-        if(count_matching_chars(line_p, &expressions->array[0], flags) == 0)
+        if (EXACT_MATCH == is_exact_match_in_line(line_p, expressions, flags))
+            return TRUE;
+        else
             return FALSE;
-    } else {
+    }
+    while (!IS_END_OF_LINE(*line_p)) {
         if (!move_to_first_match_in_line(&line_p, expressions, flags))
             return FALSE;
-    }
-
-    match_type is_match = is_exact_match_in_line(line_p, expressions, flags);
-
-    if (flags->x_flag) {
-        if (is_match == EXACT_MATCH)
+        if (is_exact_match_in_line(line_p, expressions, flags) >= MATCH)
             return TRUE;
-        else
-            return FALSE;
-    } else {
-        if (is_match >= MATCH)
-            return TRUE;
-        else
-            return FALSE;
+        line_p++;
     }
+    return FALSE;
 }
 
 
