@@ -6,7 +6,7 @@
 
 #define  FIRST_ASCII_CHAR 33
 #define  LAST_ASCII_CHAR 126
-
+#define IS_END_OF_LINE(C) (('\0' == C) || ('\n' == C))
 
 typedef enum match_type {NOT_MATCH, MATCH, EXACT_MATCH} match_type;
 
@@ -42,7 +42,7 @@ int count_matching_chars(char *line, BasicExpression *expression, Flags *flags){
 match_type is_exact_match_in_line(char *line_p, ExpressionsArray *expressions, Flags *flags){
     int expression_index = 0;
     int num_of_matching_chars;
-    while (('\0' != *line_p) && (expression_index < expressions->length)){
+    while (!IS_END_OF_LINE(*line_p) && (expression_index < expressions->length)){
         num_of_matching_chars = count_matching_chars(line_p, &expressions->array[expression_index], flags);
         if(num_of_matching_chars == 0)
             return NOT_MATCH;
@@ -50,7 +50,7 @@ match_type is_exact_match_in_line(char *line_p, ExpressionsArray *expressions, F
         line_p += num_of_matching_chars;
     }
     if (expression_index == expressions->length) {
-        if ('\0' == *line_p)
+        if (IS_END_OF_LINE(*line_p))
             return EXACT_MATCH;
         else
             return MATCH;
@@ -64,7 +64,7 @@ int move_to_first_match_in_line(char **line_p, ExpressionsArray *expressions, Fl
     int expression_index = 0;
     int num_of_matching_chars;
 
-    while ('\0' != **line_p){
+    while (!IS_END_OF_LINE(**line_p)){
         num_of_matching_chars = count_matching_chars(*line_p, &expressions->array[expression_index], flags);
         if(num_of_matching_chars > 0){
             return TRUE;
@@ -162,10 +162,10 @@ int is_match_in_line(char *line_p, ExpressionsArray *expressions, Flags *flags){
     if (flags->x_flag) {
         if(count_matching_chars(line_p, &expressions->array[0], flags) == 0)
             return FALSE;
+    } else {
+        if (!move_to_first_match_in_line(&line_p, expressions, flags))
+            return FALSE;
     }
-
-    if (!move_to_first_match_in_line(&line_p, expressions, flags))
-        return FALSE;
 
     match_type is_match = is_exact_match_in_line(line_p, expressions, flags);
 
