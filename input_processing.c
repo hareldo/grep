@@ -1,4 +1,5 @@
 #include "flags_collection.h"
+#include "counters_collection.h"
 #include "input_processing.h"
 #include "common_defines.h"
 #include "print.h"
@@ -44,8 +45,31 @@ FILE *set_search_parameters(FILE *file_pointer, Flags *input_flags, char **searc
 }
 
 
-int search_lines(FILE *file_pointer, char *search_fraze, Flags *input_flags){
-    int line_read, line_counter = 1, bit_counter = 0, match_counter = 0;
+
+int search_a_flag_lines(FILE *file_pointer, Flags *input_flags, ExpressionsArray *expressions, Counters *counters){
+    int line_read;
+    size_t line_size = 0;
+    char *line_for_a = NULL;
+    int i;
+    for (i = 0; i <= input_flags->a_flag_num; i++) {
+        line_read = getline(&line_for_a, &line_size, file_pointer);
+        if (line_read == -1)
+            return counters->line_counter;
+        counters->line_counter++;
+        counters->bit_counter = counters->bit_counter + line_read;
+        int is_match = is_match_in_line(line_for_a, expressions, input_flags);
+        if ((is_match && !input_flags->v_flag) || (!is_match && input_flags->v_flag))
+            print_line(input_flags, line_for_a, counters->line_counter, counters->bit_counter);
+        else
+            print_for_a_flag(input_flags, line_for_a, counters->line_counter, counters->bit_counter);
+    }
+    free(line_for_a);
+    return 0;
+}
+
+
+int search_lines(FILE *file_pointer, char *search_fraze, Flags *input_flags, Counters *counters){
+    int line_read;
     size_t line_size = 0;
     char *line = NULL;
     ExpressionsArray *expressions = (ExpressionsArray *)malloc(sizeof(ExpressionsArray));
@@ -56,16 +80,19 @@ int search_lines(FILE *file_pointer, char *search_fraze, Flags *input_flags){
         int is_match = is_match_in_line(line, expressions, input_flags);
         if ((is_match && !input_flags->v_flag) || (!is_match && input_flags->v_flag)){
             if(input_flags->c_flag)
-                match_counter++;
-            else
-                print_line(file_pointer, input_flags, line, line_counter, bit_counter);
+                counters->match_counter++;
+            else {
+                print_line(input_flags, line, counters->line_counter, counters->bit_counter);
+                if(input_flags->a_flag_num)
+                    search_a_flag_lines(file_pointer, input_flags, expressions, counters);
+            }
         }
         line_read = getline(&line, &line_size, file_pointer);
-        line_counter++;
-        bit_counter = bit_counter + line_read;
+        counters->line_counter++;
+        counters->bit_counter = counters->bit_counter + line_read;
     }
     if(input_flags->c_flag)
-        print_c_flag(match_counter);
+        print_c_flag(counters->match_counter);
     free_expression(expressions);
     free(line);
     return 0;
