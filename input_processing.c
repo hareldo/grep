@@ -53,8 +53,10 @@ int search_a_flag_lines(FILE *file_pointer, Flags *input_flags, ExpressionsArray
     int i;
     for (i = 0; i <= input_flags->a_flag_num; i++) {
         line_read = getline(&line_for_a, &line_size, file_pointer);
-        if (line_read == -1)
+        if (line_read == -1) {
+            free(line_for_a);
             return counters->line_counter;
+        }
         counters->line_counter++;
         counters->bit_counter = counters->bit_counter + line_read;
         int is_match = is_match_in_line(line_for_a, expressions, input_flags);
