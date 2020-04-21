@@ -23,7 +23,3 @@ void print_line(Flags *flags, char *line, int line_counter, int bit_counter){
 void print_c_flag(int match_counter){
     printf("%d\n", match_counter);
 }
-
-void print_end_of_block(){
-    printf("%s\n", BLOCKS_DELIMITER);
-}

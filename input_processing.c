@@ -7,14 +7,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-FILE *set_search_parameters(FILE *file_pointer, Flags *input_flags, char **search_fraze,
+void set_search_parameters(char **file_name, Flags *input_flags, char **search_fraze,
                     char *input_args[], int number_of_args){
-    if(file_pointer!=NULL){
-        number_of_args--;
-    }
-    else {
-        file_pointer = stdin;
-    }
     int i;
     for (i = 1; i < number_of_args; i++) {
         if(strcmp(input_args[i],"-A")==0){
@@ -36,12 +30,16 @@ FILE *set_search_parameters(FILE *file_pointer, Flags *input_flags, char **searc
         else if (strcmp(input_args[i],"-E")==0)
             input_flags->e_flag = TRUE;
         else{
-            *search_fraze = malloc(strlen(input_args[i])+1);
-            strcpy(*search_fraze,input_args[i]);
+            if(i < number_of_args - 1)
+                *search_fraze = strdup(input_args[i]);
+            else{
+                if(*search_fraze == NULL)
+                    *search_fraze = strdup(input_args[i]);
+                else
+                    *file_name = strdup(input_args[i]);
+            }
         }
-
     }
-    return file_pointer;
 }
 
 
@@ -65,7 +63,7 @@ int search_a_flag_lines(FILE *file_pointer, Flags *input_flags, ExpressionsArray
         else
             print_for_a_flag(input_flags, line_for_a, counters->line_counter, counters->bit_counter);
     }
-    print_end_of_block();
+    print_line(input_flags, BLOCKS_DELIMITER, counters->line_counter, counters->bit_counter);
     free(line_for_a);
     return 0;
 }
