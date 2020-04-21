@@ -4,8 +4,10 @@
 #include <string.h>
 #include <ctype.h>
 
-#define  FIRST_ASCII_CHAR 33
-#define  LAST_ASCII_CHAR 126
+#define FIRST_ASCII_CHAR 33
+#define LAST_ASCII_CHAR 126
+#define OR_CHARS sizeof("(|)") - 1
+#define RANGE_CHARS sizeof("[-]") - 1
 #define IS_END_OF_LINE(C) (('\0' == C) || ('\n' == C))
 
 typedef enum match_type {NOT_MATCH, MATCH, EXACT_MATCH} match_type;
@@ -92,7 +94,7 @@ int parse_round_bracket(char *string, BasicExpression *expression){
         expression->string1 = strdup(first_string);
         expression->string2 = strdup(second_string);
         expression->type = OR;
-        expression_len = strlen(first_string) + strlen(second_string) + 3;
+        expression_len = strlen(first_string) + strlen(second_string) + OR_CHARS;
     } else
         expression_len = add_chars_range(string, string, expression);
     free(string_copy);
@@ -107,7 +109,7 @@ int parse_square_bracket(char *string, BasicExpression *expression){
     char *last_char = strtok(NULL, "]");
     if((NULL != first_char) || (NULL != last_char)) {
         add_chars_range(first_char, last_char, expression);
-        expression_len = strlen(first_char) + strlen(last_char) + 3;
+        expression_len = strlen(first_char) + strlen(last_char) + RANGE_CHARS;
     } else
         expression_len = add_chars_range(string, string, expression);
     free(string_copy);

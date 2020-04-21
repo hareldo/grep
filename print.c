@@ -24,3 +24,6 @@ void print_c_flag(int match_counter){
     printf("%d\n", match_counter);
 }
 
+void print_end_of_block(){
+    printf("%s\n", BLOCKS_DELIMITER);
+}

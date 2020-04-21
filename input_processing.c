@@ -51,7 +51,7 @@ int search_a_flag_lines(FILE *file_pointer, Flags *input_flags, ExpressionsArray
     size_t line_size = 0;
     char *line_for_a = NULL;
     int i;
-    for (i = 0; i <= input_flags->a_flag_num; i++) {
+    for (i = 0; i < input_flags->a_flag_num; i++) {
         line_read = getline(&line_for_a, &line_size, file_pointer);
         if (line_read == -1) {
             free(line_for_a);
@@ -65,6 +65,7 @@ int search_a_flag_lines(FILE *file_pointer, Flags *input_flags, ExpressionsArray
         else
             print_for_a_flag(input_flags, line_for_a, counters->line_counter, counters->bit_counter);
     }
+    print_end_of_block();
     free(line_for_a);
     return 0;
 }
