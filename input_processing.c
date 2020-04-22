@@ -45,7 +45,6 @@ void set_search_parameters(char **file_name, Flags *input_flags, char **search_f
 
 
 int search_a_flag_lines(FILE *file_pointer, Flags *input_flags, ExpressionsArray *expressions, Counters *counters){
-    print_end_of_a(counters->a_block_counter);
     int line_read;
     size_t line_size = 0;
     char *line_for_a = NULL;
@@ -66,8 +65,17 @@ int search_a_flag_lines(FILE *file_pointer, Flags *input_flags, ExpressionsArray
         else
             print_for_a_flag(input_flags, line_for_a, counters->line_counter, counters->bit_counter);
     }
-    counters->a_block_counter++;
     free(line_for_a);
+    return 0;
+}
+
+
+int a_flag_blocks_handler(FILE *file_pointer, Flags *input_flags, ExpressionsArray *expressions,
+                          Counters *counters, char *line ){
+    print_end_of_a(counters->a_block_counter);
+    print_line(input_flags, line, counters->line_counter, counters->bit_counter);
+    search_a_flag_lines(file_pointer, input_flags, expressions, counters);
+    counters->a_block_counter++;
     return 0;
 }
 
@@ -87,9 +95,10 @@ int search_lines(FILE *file_pointer, char *search_fraze, Flags *input_flags, Cou
             if(input_flags->c_flag)
                 counters->match_counter++;
             else {
-                print_line(input_flags, line, counters->line_counter, counters->bit_counter);
                 if(input_flags->a_flag_num)
-                    search_a_flag_lines(file_pointer, input_flags, expressions, counters);
+                    a_flag_blocks_handler(file_pointer, input_flags, expressions, counters, line);
+                else
+                    print_line(input_flags, line, counters->line_counter, counters->bit_counter);
             }
         }
         line_read = getline(&line, &line_size, file_pointer);
