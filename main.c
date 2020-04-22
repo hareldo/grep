@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[]){
     Flags *input_flags = (Flags *)malloc(sizeof(Flags));
     set_flags_to_default(input_flags);
     char *search_fraze = NULL;
