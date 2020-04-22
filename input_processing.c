@@ -8,7 +8,7 @@
 #include <string.h>
 
 void set_search_parameters(char **file_name, Flags *input_flags, char **search_fraze,
-                    char *input_args[], int number_of_args){
+                           char *input_args[], int number_of_args){
     int i;
     for (i = 1; i < number_of_args; i++) {
         if(strcmp(input_args[i],"-A")==0){
@@ -45,6 +45,7 @@ void set_search_parameters(char **file_name, Flags *input_flags, char **search_f
 
 
 int search_a_flag_lines(FILE *file_pointer, Flags *input_flags, ExpressionsArray *expressions, Counters *counters){
+    print_end_of_a(counters->a_block_counter);
     int line_read;
     size_t line_size = 0;
     char *line_for_a = NULL;
@@ -63,7 +64,7 @@ int search_a_flag_lines(FILE *file_pointer, Flags *input_flags, ExpressionsArray
         else
             print_for_a_flag(input_flags, line_for_a, counters->line_counter, counters->bit_counter);
     }
-    print_line(input_flags, BLOCKS_DELIMITER, counters->line_counter, counters->bit_counter);
+    counters->a_block_counter++;
     free(line_for_a);
     return 0;
 }
@@ -99,4 +100,3 @@ int search_lines(FILE *file_pointer, char *search_fraze, Flags *input_flags, Cou
     free(line);
     return 0;
 }
-
