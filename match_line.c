@@ -9,25 +9,25 @@
 #define OR_CHARS sizeof("(|)") - 1
 #define RANGE_CHARS sizeof("[-]") - 1
 #define IS_END_OF_LINE(C) (('\0' == C) || ('\n' == C))
-
+#define NOT_FOUND -1
 typedef enum match_type {NOT_MATCH, MATCH, EXACT_MATCH} match_type;
 
 int count_matching_chars(char *line, BasicExpression *expression, Flags *flags){
     int first_match, second_match;
     if(expression->type == OR) {
         if (flags->i_flag){
-            first_match = (strncasecmp(line, expression->string1, strlen(expression->string1)) == 0);
-            second_match = (strncasecmp(line, expression->string2, strlen(expression->string2)) == 0);
+            first_match = (strncasecmp(line, expression->string1, expression->length1) == 0);
+            second_match = (strncasecmp(line, expression->string2, expression->length2) == 0);
         } else {
-            first_match = (strncmp(line, expression->string1, strlen(expression->string1)) == 0);
-            second_match = (strncmp(line, expression->string2, strlen(expression->string2)) == 0);
+            first_match = (strncmp(line, expression->string1, expression->length1) == 0);
+            second_match = (strncmp(line, expression->string2, expression->length2) == 0);
         }
         if(first_match)
-            return strlen(expression->string1);
+            return expression->length1;
         else if(second_match)
-            return strlen(expression->string2);
+            return expression->length2;
         else
-            return FALSE;
+            return NOT_FOUND;
     }
     else {
         if (flags->i_flag) {
@@ -37,7 +37,10 @@ int count_matching_chars(char *line, BasicExpression *expression, Flags *flags){
             first_match = (*line >= *(expression->string1));
             second_match = (*line <= *(expression->string2));
         }
-        return (first_match && second_match);
+        if(first_match && second_match)
+            return 1;
+        else
+            return NOT_FOUND;
     }
 }
 
@@ -46,7 +49,7 @@ match_type is_exact_match_in_line(char *line_p, ExpressionsArray *expressions, F
     int num_of_matching_chars;
     while (!IS_END_OF_LINE(*line_p) && (expression_index < expressions->length)){
         num_of_matching_chars = count_matching_chars(line_p, &expressions->array[expression_index], flags);
-        if(num_of_matching_chars == 0)
+        if(num_of_matching_chars == NOT_FOUND)
             return NOT_MATCH;
         expression_index++;
         line_p += num_of_matching_chars;
@@ -68,7 +71,7 @@ int move_to_first_match_in_line(char **line_p, ExpressionsArray *expressions, Fl
 
     while (!IS_END_OF_LINE(**line_p)){
         num_of_matching_chars = count_matching_chars(*line_p, &expressions->array[expression_index], flags);
-        if(num_of_matching_chars > 0){
+        if(num_of_matching_chars > NOT_FOUND){
             return TRUE;
         }else
             *line_p += 1;
@@ -80,6 +83,8 @@ int move_to_first_match_in_line(char **line_p, ExpressionsArray *expressions, Fl
 int add_chars_range(char *first_char, char *last_char, BasicExpression *expression){
     expression->string1 = strndup(first_char, 1);
     expression->string2 = strndup(last_char, 1);
+    expression->length1 = 1;
+    expression->length2 = 1;
     expression->type = RANGE;
     return 1;
 }
@@ -87,16 +92,32 @@ int add_chars_range(char *first_char, char *last_char, BasicExpression *expressi
 int parse_round_bracket(char *string, BasicExpression *expression){
     char *string_copy;
     string_copy = strdup(string + 1);
-    char *first_string = strtok(string_copy, "|");
-    char *second_string = strtok(NULL, ")");
+    char *first_string;
+    char *second_string;
     int expression_len;
-    if((NULL != first_string) || (NULL != second_string)) {
-        expression->string1 = strdup(first_string);
-        expression->string2 = strdup(second_string);
-        expression->type = OR;
-        expression_len = strlen(first_string) + strlen(second_string) + OR_CHARS;
-    } else
+    if (*string_copy == '|')
+        first_string = strdup("");
+    else
+        first_string = strtok(string_copy, "|");
+
+    if(NULL == first_string) {
         expression_len = add_chars_range(string, string, expression);
+    } else {
+        expression->string1 = strdup(first_string);
+        expression->length1 = strlen(first_string);
+        if (expression->length1 == 0)
+            free(first_string);
+        if (*(first_string + strlen(first_string) + 1) != ')')
+            second_string = strtok(NULL, ")");
+        else
+            second_string = strdup("");
+        expression->string2 = strdup(second_string);
+        expression->length2 = strlen(second_string);
+        if (expression->length2 == 0)
+            free(second_string);
+        expression->type = OR;
+        expression_len = expression->length1 + expression->length2 + OR_CHARS;
+    }
     free(string_copy);
     return expression_len;
 }
@@ -125,6 +146,8 @@ void parse_regex(char *regex_p, ExpressionsArray *expressions, Flags *flags){
     if (!flags->e_flag) {
         new_array[0].string1 = strdup(regex_p);
         new_array[0].string2 = strdup(regex_p);
+        new_array[0].length1 = strlen(new_array[0].string1);
+        new_array[0].length2 = new_array[0].length1;
         new_array[0].type = OR;
         num_of_expressions = 1;
     } else {
