@@ -59,8 +59,10 @@ int search_a_flag_lines(FILE *file_pointer, Flags *input_flags, ExpressionsArray
         counters->line_counter++;
         counters->bit_counter = counters->bit_counter + line_read;
         int is_match = is_match_in_line(line_for_a, expressions, input_flags);
-        if ((is_match && !input_flags->v_flag) || (!is_match && input_flags->v_flag))
+        if ((is_match && !input_flags->v_flag) || (!is_match && input_flags->v_flag)){
             print_line(input_flags, line_for_a, counters->line_counter, counters->bit_counter);
+            i = -1;
+        }
         else
             print_for_a_flag(input_flags, line_for_a, counters->line_counter, counters->bit_counter);
     }
