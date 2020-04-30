@@ -1,0 +1,11 @@
+main: this module allocates memory for the main variables of the code and calls all necessary functions with the needed parameters
+
+input_processing: this module processes the input given by the user sets the flages and calls the other modules accordingly
+
+match_line: this module checks if a line matches the search_phrase (while taking the flages into consideration) and returns true or false accordingly 
+
+flages_collection: a collection of flges that are set by input_proccesing according to the input arguments
+
+counters_collection: a collection of counters being used by the other modules
+
+print: this module contains all the functions that print to screen
