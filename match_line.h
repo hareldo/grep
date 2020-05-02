@@ -6,16 +6,16 @@
 typedef enum regex_type { OR, RANGE } regex_type;
 
 typedef struct BasicExpression {
-    char *string1;
-    char *string2;
-    int length1;
-    int length2;
-    regex_type type;
+  char *string1;
+  char *string2;
+  int length1;
+  int length2;
+  regex_type type;
 } BasicExpression;
 
 typedef struct ExpressionsArray {
-    BasicExpression *array;
-    int length;
+  BasicExpression *array;
+  int length;
 } ExpressionsArray;
 
 void parse_regex(char *regex_p, ExpressionsArray *expressions, Flags *flags);
