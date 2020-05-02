@@ -25,4 +25,4 @@ clean:
 all: my_grep
 
 test:
-	run_all.sh
+	~nimrodav/grep_tests/run_all.sh
