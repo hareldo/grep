@@ -23,3 +23,6 @@ print.o: print.c print.h flags_collection.h
 clean: 
 	-rm main.o flags_collection.o input_processing.o match_line.o print.o my_grep
 all: my_grep
+
+test:
+	run_all.sh
